@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Developer Token </title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="js/env.js"></script>
+	<script src="js/web3.min.js"></script>
+	<script src="js/web3-event.js"></script>
+	<script src="js/ethereumjs-wallet-0.6.0.min.js"></script>
+	<script src="js/contract.js"></script>
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+</head>
+<body>
+	<h1 style="background-color:black;color:white;text-align:center;"> Developer Token Test Faucet </h1>
+</br></br></br>
+	<form class="form-horizontal">
+  <div class="form-group">
+    <label class="control-label col-sm-2" for="text" required>Address:</label>
+    <div class="col-sm-6">
+      <input type="text" class="form-control" id="address" placeholder="Enter address">
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit" class="btn btn-default js-submit">Submit</button>
+			<!-- <input type="button" onclick="request()" value="Submit"> -->
+    </div>
+  </div>
+	<p style="text-align:center;"> Our Missiong : Our's mission is to power sustainable journalism throughout the world.</p>
+</form>
+
+<script>
+
+  var web3 = new Web3(new Web3.providers.HttpProvider("https://rinkeby.infura.io/"));
+  var Contract = web3.eth.contract(ContractABI).at(ContractAddress);
+  console.log(Contract, "Contract Instance made successfully");
+
+
+	$(".js-submit").on("click", function(e) {
+		var address = $("#address").val();
+		console.log(address, "address");
+		if(address && address.trim() && address.trim().length > 25) {
+				sendTokens(address);
+		}
+		else {
+        swal("wrong!", "Something went wrong!", "error");
+		}
+		e.preventDefault();
+		return false;
+
+	})
+
+	// send dev tokens to user
+  function sendTokens(address) {
+    web3.eth.getTransactionCount(account, function (err, nonce) {
+      var data = Contract.requesttoken.getData(address);
+      var tx = new ethereumjs.Tx({
+        nonce: nonce,
+        gasPrice: web3.toHex(web3.toWei('1', 'gwei')),
+        gasLimit: 1e6,
+        to: ContractAddress,
+        value: 0,
+        data: data
+      });
+
+      tx.sign(ethereumjs.Buffer.Buffer.from(privateKey, 'hex'));
+      var raw = '0x' + tx.serialize().toString('hex');
+      web3.eth.sendRawTransaction(raw, function (err, result) {
+        console.log(result);
+				web3.eth.getTransactionReceipt(result, function(res) {
+					console.log(res)
+					swal("Token Sent!", "Thanks for choosing us!", "success");
+				})
+      });
+    });
+  }
+
+</script>
+
+</body>
+</html>
