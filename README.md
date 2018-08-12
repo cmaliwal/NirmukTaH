@@ -16,6 +16,14 @@ Currently, the project contains the power to host 2 interpretations for one arti
 
 Current inner workings include the Smart Contracts, IPFS Codebase to allow storing documents on the network.
 
+### Workings of the Project:
+
+1. PLCRVoting.sol is used to handle the Partial-Lock-Commit-Reveal Voting Mechanism.
+
+1. Parameterizer.sol is used to govern the TCR Parameters and allow them to change as per the proposals.
+
+1. Registry.sol is used as the Heart of the Project, which allows anyone to post a new article with their own interpretation, or provide a different interpretation on an already existing article up for voting.
+
 ### Tools and Technology used by Us
 
 1. **Solidity**: Smart contract development
